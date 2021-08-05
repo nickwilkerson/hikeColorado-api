@@ -44,6 +44,20 @@ router.get('/hike', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+// UPDATE //PATCH
+router.patch('/hike/:id', requireToken, removeBlanks, (req, res, next) => {
+  delete req.body.hike.owner
+
+  Hike.findById(req.params.id)
+    .then(handle404)
+    .then(hike => {
+      requireOwnership(req, hike)
+      return hike.updateOne(req.body.hike)
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
+
 // DELETE
 router.delete('/hike/:id', requireToken, (req, res, next) => {
   Hike.findById(req.params.id)
