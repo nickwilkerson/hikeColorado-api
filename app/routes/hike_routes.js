@@ -2,7 +2,7 @@ const express = require('express')
 
 const passport = require('passport')
 
-const Hike = require('./../models/hike') 
+const Hike = require('./../models/hike')
 
 const customErrors = require('../../lib/custom_errors')
 
@@ -15,7 +15,6 @@ const removeBlanks = require('../../lib/remove_blank_fields')
 const requireToken = passport.authenticate('bearer', { session: false })
 
 const router = express.Router()
-
 
 // CREATE
 // POST /hike
@@ -31,6 +30,17 @@ router.post('/hike', requireToken, (req, res, next) => {
     // if an error occurs, pass it off to our error handler
     // the error handler needs the error message and the `res` object so that it
     // can send an error message back to the client
+    .catch(next)
+})
+
+// SHOW
+// GET
+router.get('/hike', requireToken, (req, res, next) => {
+  Hike.find()
+    .then(hike => {
+      return hike.map(hike => hike.toObject())
+    })
+    .then(hike => res.status(200).json({ hike }))
     .catch(next)
 })
 
