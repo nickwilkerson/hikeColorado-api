@@ -37,10 +37,22 @@ router.post('/hike', requireToken, (req, res, next) => {
 // GET
 router.get('/hike', requireToken, (req, res, next) => {
   Hike.find()
-    .then(hike => {
-      return hike.map(hike => hike.toObject())
+    .then((hike) => {
+      return hike.map((hike) => hike.toObject())
     })
-    .then(hike => res.status(200).json({ hike }))
+    .then((hike) => res.status(200).json({ hike }))
+    .catch(next)
+})
+
+// DELETE
+router.delete('/hike/:id', requireToken, (req, res, next) => {
+  Hike.findById(req.params.id)
+    .then(handle404)
+    .then(hike => {
+      requireOwnership(req, hike)
+      hike.deleteOne()
+    })
+    .then(() => res.sendStatus(204))
     .catch(next)
 })
 
