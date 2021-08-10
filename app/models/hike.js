@@ -10,6 +10,17 @@ const hikeSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    distance: {
+      type: String,
+      required: true
+    },
+    difficulty: {
+      type: String,
+      required: true
+    },
+    notes: {
+      type: String
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

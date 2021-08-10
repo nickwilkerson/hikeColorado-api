@@ -44,6 +44,16 @@ router.get('/hike', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+router.get('/hike/:id', requireToken, (req, res, next) => {
+  // req.params.id will be set based on the `:id` in the route
+  Hike.findById(req.params.id)
+    .then(handle404)
+  // if `findById` is succesful, respond with 200 and "example" JSON
+    .then((hike) => res.status(200).json({ hike: hike.toObject() }))
+  // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
 // UPDATE //PATCH
 router.patch('/hike/:id', requireToken, removeBlanks, (req, res, next) => {
   delete req.body.hike.owner
@@ -63,7 +73,7 @@ router.delete('/hike/:id', requireToken, (req, res, next) => {
   Hike.findById(req.params.id)
     .then(handle404)
     .then(hike => {
-      requireOwnership(req, hike)
+    //   requireOwnership(req, hike)
       hike.deleteOne()
     })
     .then(() => res.sendStatus(204))
